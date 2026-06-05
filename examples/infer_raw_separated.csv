@@ -1,0 +1,2 @@
+sample_id,protein_path,ligand_path
+case001,examples/raw/case001/protein.pdb,examples/raw/case001/ligand.sdf

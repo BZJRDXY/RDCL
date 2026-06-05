@@ -1,0 +1,5 @@
+# Development and documentation helpers.
+pytest>=7
+ruff>=0.4
+build>=1.0
+wheel

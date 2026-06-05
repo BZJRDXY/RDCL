@@ -1,0 +1,2 @@
+sample_id,complex_path,ligand_resname,ligand_chain,ligand_resseq
+case001,examples/raw/case001/complex.pdb,LIG,A,401

@@ -1,0 +1,74 @@
+seed: 0
+
+paths:
+  processed_cache_dir: null
+
+data:
+  ar_cutoff: 7.0
+  force_include_positive_pairs: true
+  drop_zero_positive: true
+  num_workers: 4
+  pin_memory: true
+  # Set to a positive integer for quick debugging.
+  max_train_samples: null
+  max_valid_samples: null
+
+input_dims:
+  lig_atom_dim: 31
+  lig_bond_dim: 7
+  prot_res_dim: 25
+  prot_atom_dim: 17
+  esm_dim: 1280
+  aa_edge_dim: 10
+
+model:
+  hidden_dim: 384
+  node_mlp_hidden: 768
+  edge_mlp_hidden: 768
+  atom_atom_layers: 3
+  atom_residue_layers: 3
+  edge_agg_heads: 8
+  rbf_dim: 32
+  rbf_cutoff: 12.0
+  dropout: 0.10
+  gamma_global_local: 0.5
+  gumbel_temperature: 0.3
+  set2set_steps: 4
+  coord_update: true
+  coord_scale: 0.05
+  use_atom_res_lig_output: true
+  importance_mode: mean
+
+train:
+  batch_size: 4
+  grad_accum_steps: 4
+  epochs: 150
+  lr: 1.0e-4
+  weight_decay: 1.0e-5
+  amp: false
+  grad_clip_norm: 5.0
+  log_every: 20
+  save_every: 1
+  eval_every: 1
+  find_unused_parameters: true
+  torch_num_threads: 4
+
+loss:
+  lambda_site: 1.0
+  lambda_affinity: 1.0
+  lambda_kl: 1.0
+  site_pos_weight_mode: none   # none | batch | fixed
+  site_pos_weight: 1.0
+  site_pos_weight_cap: 10.0
+  affinity_standardize: true
+
+metrics:
+  top_p: 0.15
+
+
+inference:
+  # Training-set affinity statistics used to unstandardize affinity predictions
+  # when loading a pure state_dict checkpoint without embedded metadata.
+  # Replace these values when training on a different dataset.
+  affinity_mean: 6.359044551849365
+  affinity_std: 1.8564249277114868

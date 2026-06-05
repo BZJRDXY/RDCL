@@ -1,0 +1,11 @@
+# RDCL base dependencies for training from existing PT/cache files.
+# For CUDA-enabled PyTorch, install torch from the official PyTorch index or conda first.
+# Example: conda install pytorch=2.5 pytorch-cuda=12.1 -c pytorch -c nvidia
+
+torch>=2.1,<3
+numpy>=1.24
+pandas>=2.0
+pyyaml>=6.0
+scikit-learn>=1.3
+tqdm>=4.65
+scipy>=1.10

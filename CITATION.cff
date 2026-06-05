@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+title: "RDCL: Rationale-based Dual-objective Cooperative Learning for Compound-Protein Interaction Prediction"
+message: "If you use RDCL, please cite the accompanying manuscript."
+type: software
+authors:
+  - family-names: Wu
+    given-names: Zheyu
+  - family-names: Ma
+    given-names: Huifang
+  - family-names: Deng
+    given-names: Bin
+  - family-names: Bing
+    given-names: Rui
+  - family-names: Li
+    given-names: Zhixin
+  - family-names: Jia
+    given-names: Meihuizi
+  - family-names: Zhang
+    given-names: Di
+year: 2026
+license: MIT
+preferred-citation:
+  type: article
+  title: "Rationale-based Dual-objective Cooperative Learning for Compound-Protein Interaction Prediction"
+  authors:
+    - family-names: Wu
+      given-names: Zheyu
+    - family-names: Ma
+      given-names: Huifang
+    - family-names: Deng
+      given-names: Bin
+    - family-names: Bing
+      given-names: Rui
+    - family-names: Li
+      given-names: Zhixin
+    - family-names: Jia
+      given-names: Meihuizi
+    - family-names: Zhang
+      given-names: Di
+  year: 2026

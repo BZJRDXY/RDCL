@@ -1,0 +1,14 @@
+# Extra dependencies for raw-structure inference and strict cache building.
+# Install requirements.txt first.
+
+rdkit>=2023.9
+biopython>=1.80
+fair-esm>=2.0.0
+
+# Required only for strict supervised interaction labels via --interaction_mode plip.
+plip>=3.0.0
+
+# Optional. Prefer conda-forge openbabel when possible:
+#   conda install -c conda-forge openbabel
+# pip wheels are platform-dependent and may not work on all clusters.
+# openbabel-wheel>=3.1.1
