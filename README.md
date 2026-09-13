@@ -6,7 +6,6 @@ It supports:
 
 - binding-site prediction through atom-residue interaction rationales;
 - binding-affinity regression through rationale-based complex representations;
-- RDCL/MultiFlowDock-style PT-cache training;
 - multi-GPU DDP base-model training;
 - inference from existing PT caches;
 - direct inference from raw protein-ligand complex poses without requiring users to manually build PT files;
