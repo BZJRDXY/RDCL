@@ -75,8 +75,6 @@ See [docs/INSTALL.md](docs/INSTALL.md) and [docs/DEPENDENCIES.md](docs/DEPENDENC
 
 ## Checkpoints
 
-Pretrained weights are **not included** in the repository.
-
 Recommended local checkpoint name for the 30M model:
 
 ```text
