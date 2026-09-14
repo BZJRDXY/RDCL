@@ -63,7 +63,9 @@ loss:
   affinity_standardize: true
 
 metrics:
-  top_p: 0.15
+  # Nominal cutoff used for the paper's Recall/EF evaluation.
+  # Inference rationale selection remains Top-15% by default.
+  top_p: 0.03
 
 
 inference:

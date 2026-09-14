@@ -1,12 +1,12 @@
 # Checkpoints
 
-Place local trained checkpoints here. Pretrained weights are not included in the repository.
-
-Recommended local filename:
+The fully trained RDCL checkpoint is released in this directory through Git LFS:
 
 ```text
 rdcl_30m_state_dict.pt
 ```
+
+It was trained with the complete RDCL procedure described in the paper. The released file is a pure PyTorch `state_dict` for inference, so it contains model parameters but no optimizer state, epoch, or training history.
 
 Export a pure state_dict from a full training checkpoint:
 
@@ -25,4 +25,4 @@ python -m rdcl.tools.validate_checkpoint \
   --config configs/rdcl_base_30m.yaml
 ```
 
-Do not commit `.pt`, `.pth`, or `.ckpt` files unless you intentionally release weights.
+Other `.pt`, `.pth`, and `.ckpt` files should remain local unless they are intentionally released.

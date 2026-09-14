@@ -1,6 +1,6 @@
 # Checkpoints
 
-Pretrained weights are not included in this repository.
+The fully trained RDCL checkpoint is included through Git LFS. It was trained with the complete RDCL procedure described in the paper and is released for inference.
 
 ## Recommended local checkpoint
 
@@ -10,7 +10,7 @@ For the released 30M architecture, use:
 checkpoints/rdcl_30m_state_dict.pt
 ```
 
-This is a pure PyTorch `state_dict` file. It contains only model parameters. It does not contain optimizer state, epoch, step, GradScaler state, or training logs.
+This is a pure PyTorch `state_dict` file exported after complete RDCL training. It contains only model parameters. It does not contain optimizer state, epoch, step, GradScaler state, or training logs.
 
 Because it is a pure state_dict, inference must also receive the model config:
 

@@ -7,6 +7,7 @@ It supports:
 - binding-site prediction through atom-residue interaction rationales;
 - binding-affinity regression through rationale-based complex representations;
 - multi-GPU DDP base-model training;
+- paper-aligned Top-3% Recall and enrichment-factor evaluation;
 - inference from existing PT caches;
 - direct inference from raw protein-ligand complex poses without requiring users to manually build PT files;
 - strict RDCL-compatible cache construction for supervised training or reproducible preprocessing.
@@ -21,7 +22,7 @@ This repository implements the RDCL **base model** and base training objective:
 L_base = L_site + L_affinity + lambda_kl * L_KL
 ```
 
-The self-training package is kept as an extension interface. Full pseudo-label regeneration, affinity-consistency filtering, scPDB auxiliary pretraining, and complete paper-level benchmark scripts are not enabled by default.
+The released `checkpoints/rdcl_30m_state_dict.pt` was trained with the complete RDCL procedure described in the paper and is provided for inference. The public training entry point currently covers the base-training stage; full pseudo-label regeneration, affinity-consistency filtering, scPDB auxiliary pretraining, and complete paper-level benchmark scripts are not enabled in this release.
 
 ## Repository structure
 
@@ -36,7 +37,7 @@ rdcl/tools/              manifest, sanity-check, dependency, checkpoint tools
 rdcl/self_training/      reserved interfaces for pseudo-label self-training
 docs/                    installation, inference, cache-building and format docs
 examples/                example CSV formats
-checkpoints/             local checkpoint directory; weights are not included
+checkpoints/             released fully trained checkpoint (Git LFS)
 ```
 
 ## Installation
@@ -74,13 +75,13 @@ See [docs/INSTALL.md](docs/INSTALL.md) and [docs/DEPENDENCIES.md](docs/DEPENDENC
 
 ## Checkpoints
 
-Recommended local checkpoint name for the 30M model:
+The fully trained RDCL checkpoint used for inference is released through Git LFS:
 
 ```text
 checkpoints/rdcl_30m_state_dict.pt
 ```
 
-This file is a pure PyTorch `state_dict`. It contains only model parameters and must be used together with:
+This file is a pure PyTorch `state_dict` exported after the complete RDCL training procedure. It contains model parameters, but no optimizer state or training history, and must be used together with:
 
 ```text
 configs/rdcl_base_30m.yaml
@@ -104,6 +105,12 @@ python -m rdcl.tools.validate_checkpoint \
 ```
 
 See [docs/CHECKPOINTS.md](docs/CHECKPOINTS.md).
+
+## Paper evaluation settings
+
+The paper reports atom- and residue-level Recall and EF using a nominal Top-3% evaluation cutoff. For each complex, the integer selection size is `k = ceil(0.03 * N)`, and EF uses the actual selected fraction `k/N`. Per-complex Recall and EF are averaged separately. This evaluation setting is distinct from the Top-15% rationale-selection setting used by inference and model analysis.
+
+The implementation is provided in `rdcl/training/metrics.py`; see [docs/EVALUATION.md](docs/EVALUATION.md) for the exact definitions.
 
 ## Training from existing PT caches
 

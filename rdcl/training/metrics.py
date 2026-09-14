@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from typing import Dict, List
 
 import torch
@@ -36,8 +37,34 @@ def binary_auprc(logits: torch.Tensor, labels: torch.Tensor) -> float:
     return float(auprc.item())
 
 
-def recall_at_top_p(logits: torch.Tensor, labels: torch.Tensor, edge_batch: torch.Tensor, num_samples: int, top_p: float = 0.15) -> float:
+def recall_at_top_p(
+    logits: torch.Tensor,
+    labels: torch.Tensor,
+    edge_batch: torch.Tensor,
+    num_samples: int,
+    top_p: float = 0.03,
+) -> float:
+    return recall_and_ef_at_top_p(logits, labels, edge_batch, num_samples, top_p)["recall"]
+
+
+def recall_and_ef_at_top_p(
+    logits: torch.Tensor,
+    labels: torch.Tensor,
+    edge_batch: torch.Tensor,
+    num_samples: int,
+    top_p: float = 0.03,
+) -> Dict[str, float]:
+    """Compute macro Recall and EF with the actual per-complex selected fraction.
+
+    For complex ``i``, ``k_i = ceil(top_p * N_i)`` candidates are selected and
+    ``EF_i = Recall_i / (k_i / N_i)``. Recall and EF are then averaged separately
+    over complexes containing at least one positive label.
+    """
+    if not 0.0 < float(top_p) <= 1.0:
+        raise ValueError(f"top_p must be in (0, 1], got {top_p}")
+
     vals: List[float] = []
+    ef_vals: List[float] = []
     logits = logits.detach()
     labels = labels.detach()
     edge_batch = edge_batch.detach().long()
@@ -49,10 +76,17 @@ def recall_at_top_p(logits: torch.Tensor, labels: torch.Tensor, edge_batch: torc
         if y.sum() <= 0:
             continue
         s = logits[mask]
-        k = max(1, int(torch.ceil(torch.tensor(float(top_p) * y.numel())).item()))
-        idx = torch.topk(s, k=min(k, y.numel())).indices
-        vals.append(float(y[idx].sum().div(y.sum().clamp_min(1.0)).item()))
-    return float(sum(vals) / max(len(vals), 1))
+        k = max(1, math.ceil(float(top_p) * y.numel()))
+        k = min(k, y.numel())
+        idx = torch.topk(s, k=k).indices
+        recall = float(y[idx].sum().div(y.sum().clamp_min(1.0)).item())
+        selected_fraction = float(k) / float(y.numel())
+        vals.append(recall)
+        ef_vals.append(recall / selected_fraction)
+    return {
+        "recall": float(sum(vals) / max(len(vals), 1)),
+        "ef": float(sum(ef_vals) / max(len(ef_vals), 1)),
+    }
 
 
 class MetricAccumulator:
@@ -84,6 +118,10 @@ class MetricAccumulator:
         site_batches = torch.cat(self.site_batches)
         out = affinity_metrics(pred, true)
         out["site_auprc"] = binary_auprc(site_logits, site_labels)
-        out["site_recall_top_p"] = recall_at_top_p(site_logits, site_labels, site_batches, self.sample_offset, self.top_p)
+        ranking = recall_and_ef_at_top_p(
+            site_logits, site_labels, site_batches, self.sample_offset, self.top_p
+        )
+        out["site_recall_top_p"] = ranking["recall"]
+        out["site_ef_top_p"] = ranking["ef"]
         out["site_pos_ratio"] = float(site_labels.float().mean().item())
         return out
